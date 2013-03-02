@@ -28,7 +28,7 @@ class Task(BaseTask):
                            Task.default_config_path()
         self.errors_only = options['pylint_errors_only']
 
-        if options.get('pylint_file_output', True):
+        if options.get('djlint_file_output', True):
             output_dir = options['output_dir']
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
