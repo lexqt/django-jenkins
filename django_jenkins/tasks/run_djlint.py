@@ -8,7 +8,7 @@ from django_jenkins.tasks import BaseTask, get_apps_under_test
 
 from pylint.reporters.text import ParseableTextReporter
 
-from DjangoLint.script import djlint
+from django_lint.script import djlint
 
 
 class Task(BaseTask):
