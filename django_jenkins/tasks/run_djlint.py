@@ -12,21 +12,21 @@ from django_lint.script import djlint
 
 
 class Task(BaseTask):
-    option_list = [make_option("--pylint-rcfile",
-                               dest="pylint_rcfile",
-                               help="pylint configuration file"),
-                   make_option("--pylint-errors-only",
-                               dest="pylint_errors_only",
+    option_list = [make_option("--djlint-rcfile",
+                               dest="djlint_rcfile",
+                               help="django pylint configuration file"),
+                   make_option("--djlint-errors-only",
+                               dest="djlint_errors_only",
                                action="store_true", default=False,
-                               help="pylint output errors only mode")]
+                               help="django lint output errors only mode")]
 
     def __init__(self, test_labels, options):
         super(Task, self).__init__(test_labels, options)
 
         self.test_all = options['test_all']
-        self.config_path = options['pylint_rcfile'] or \
+        self.config_path = options['djlint_rcfile'] or \
                            Task.default_config_path()
-        self.errors_only = options['pylint_errors_only']
+        self.errors_only = options['djlint_errors_only']
 
         if options.get('djlint_file_output', True):
             output_dir = options['output_dir']
