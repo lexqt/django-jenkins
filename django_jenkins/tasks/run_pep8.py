@@ -2,6 +2,7 @@
 import os
 import sys
 import pep8
+from django.conf import settings
 from optparse import make_option
 from django_jenkins.functions import relpath
 from django_jenkins.tasks import BaseTask, get_apps_locations
@@ -38,14 +39,28 @@ class Task(BaseTask):
         else:
             self.output = sys.stdout
 
-        self.pep8_options = {'exclude': options['pep8-exclude'].split(',')}
-        if options['pep8-select']:
+        user_options = self.get_pep8_settings()
+        self.pep8_options = {}
+        if 'exclude' in user_options:
+            self.pep8_options['exclude'] = user_options['exclude'].split(',')
+        else:
+            self.pep8_options['exclude'] = options['pep8-exclude'].split(',')
+
+        if 'select' in user_options:
+            self.pep8_options['select'] = user_options['select'].split(',')
+        elif options['pep8-select']:
             self.pep8_options['select'] = options['pep8-select'].split(',')
-        if options['pep8-ignore']:
+
+        if 'ignore' in user_options:
+            self.pep8_options['ignore'] = user_options['ignore'].split(',')
+        elif options['pep8-ignore']:
             self.pep8_options['ignore'] = options['pep8-ignore'].split(',')
-        if options['pep8-max-line-length']:
-            self.pep8_options['max_line_length'] = \
-                                                options['pep8-max-line-length']
+
+        if 'max_line_length' in user_options:
+            self.pep8_options['max_line_length'] = user_options['max_line_length']
+        elif options['pep8-max-line-length']:
+            self.pep8_options['max_line_length'] = options['pep8-max-line-length']
+
 
     def teardown_test_environment(self, **kwargs):
         locations = get_apps_locations(self.test_labels, self.test_all)
@@ -69,3 +84,7 @@ class Task(BaseTask):
             pep8style.input_dir(relpath(location))
 
         self.output.close()
+
+    @staticmethod
+    def get_pep8_settings():
+        return getattr(settings, 'PEP8_OPTIONS', {})
