@@ -55,6 +55,8 @@ class XMLTextNoseTestRunner(nose.core.TextTestRunner):
             startTestRun()
         try:
             test(result)
+        except UnicodeDecodeError:
+            result.stream.writeln('UnicodeDecodeError (most likely due to issue with nose capture)')
         finally:
             stopTestRun = getattr(result, 'stopTestRun', None)
             if stopTestRun is not None:
