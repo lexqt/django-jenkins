@@ -132,6 +132,11 @@ class XMLTestResult(TextTestResult):
         super(XMLTestResult, self).addUnexpectedSuccess(test)
         signals.test_unexpected_success.send(sender=self, test=test)
 
+    def _restoreStdout(self):
+        super(XMLTestResult, self)._restoreStdout()
+        # disable buffering once the stdout/stderr are reset
+        self.buffer = False
+
     def _exc_info_to_string(self, err, test):
         """
         Converts a sys.exc_info()-style tuple of values into a string.
